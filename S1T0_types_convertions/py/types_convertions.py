@@ -2,22 +2,35 @@ import ctypes
 
 
 def dec2bin(x, signed) -> str:
-    """
-    get binary representation of int32/uint32
-    you should rewrite the code to avoid built-in f-string conversions
-    """
+    if x == 0:
+        return '0' * 32
+    answer = ''
+    y = abs(x)
+    while y != 1:
+        answer += str(y % 2)
+        y //= 2
+    answer = ('0' * (31 - len(answer))) + '1' + answer[::-1]
     if signed:
-        return f'{x & 0xffffffff:032b}'
+        if x < 0:
+            opposite = ''
+            last_zero = 0
+            for i in range(len(answer)):
+                if answer[i] == '1':
+                    opposite += '0'
+                    last_zero = i
+                else:
+                    opposite += '1'
+            answer = opposite[:last_zero] + '1' + '0' * (len(answer) - last_zero - 1)
+        return answer
     else:
-        return f'{x:032b}'
+        return '-' * (x < 0) + '0' * ((x > 0) & (x < 2 ** 31)) + '1' * (x >= 2 ** 31) + answer[1:]
 
 
 def bin2dec(x, signed) -> int:
-    """
-    get integer from it's binary representation
-    you should rewrite the code to avoid built-in int(x, 2) conversion
-    """
-    return int(x, 2) - 2**32 * int(x[0]) * signed
+    answer = 0
+    for i in x:
+        answer = answer * 2 + int(i)
+    return answer - 2 ** 32 * int(x[0]) * signed
 
 
 def float2bin(x) -> str:
@@ -29,8 +42,14 @@ def float2bin(x) -> str:
 
 
 def bin2float(x) -> float:
-    """
-    get float from it's binary representation
-    you should rewrite the code to avoid ctypes conversions
-    """
-    return ctypes.c_float.from_buffer(ctypes.c_uint32(int(x, 2))).value
+    answer = 0
+    if x[1:].count('1') == 0:
+        return 0
+    y = '1' + x[9:]
+    k = bin2dec(x[1:9], False) - 127
+    for i in y:
+        answer += int(i) * (2 ** k)
+        k -= 1
+    if x[0] == '1':
+        answer *= (-1)
+    return answer
