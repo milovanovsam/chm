@@ -1,34 +1,35 @@
 # Repo for computational tasks.
 
-Each task can be solved in MATLAB or Python, look corresponding folders for code examples and test scripts.
+## Task list:
+1. Term 1:
+    * `S1T0_types_convertions`
+    * `S1T1_compute_function`
+    * `S1T2_solve_linear_system`
+    * `S1T3_newton_method`
+1. Term 2:
+    * `S2T1_optimization`
+    * `S2T2_interpolation`
+    * `S2T3_approximation`
+1. Term 3:
+    * `S3T1_integration`
+    * `S3T2_solve_ode`
+
+Each task should be solved in Python>=3.6, look corresponding folders for code examples and test scripts.
 You should write the code that solves the problem and is verified by test script. Check readme.md files in subfolders for details (in Russian!).
 
-## Common MATLAB code structure:
-* `matlab/test_met*.m` - test script that runs your solutions.
-* `matlab/met*_*.m` - dummy code, you should replace it with yours.
-
 ## Common Python code structure:
-* `py/test_<task_name>.py` - test script that runs your solutions. You have several options to run it:
-  - run `pytest` or `python -m pytest` in this folder;
-  - set pytest as PyCharm default test runner and press `Run test` at `def test_<task_name>():` row.
-* `py/<task_name>.py` - dummy code, you should replace it with yours.
+* `<TASK_NAME>/`
+    * `__init__.py`
+    * `py/`
+        * `__init__.py`
+        * `test_<subtask_name>.py` - test script that checks your solutions. You have several options to run it:
+          * `python -m pytest path/to/test_<task_name>.py`
+          * `pytest path/to/test_<task_name>.py`
+          * set pytest as PyCharm default test runner and press `Run test` at `def test_<task_name>():` row.
+        * `<subtask_name>.py` - dummy code, you should replace it with yours.
 
-## Task list:
-### Term 1.
-* `S1T0_types_convertions`
-* [_TBD_] `S1T1_compute_function`
-* [_TBD_] `S1T2_solve_linear_system`
-* [_TBD_] `S1T3_newton_method`
-### Term 2.
-* `S2T1_optimization`
-* `S2T2_interpolation`
-* `S2T3_approximation`
-### Term 3.
-* `S3T1_integration`
-* [_TBD_] `S3T2_solve_ode`
-
-Feel free to ask.
-
-https://t.me/chm_1sem
-
-https://t.me/chm_3sem
+## Contacts
+Feel free to ask:
+* sagoyewatha@mail.ru
+* [Term 1] https://t.me/chm_1sem
+* [Term 3] https://t.me/chm_3sem

@@ -1,21 +1,20 @@
 import numpy as np
 
 
-def weight(degree, a, b, alpha=0, beta=0):
+def moments(max_s, xl, xr, a=None, b=None, alpha=0.0, beta=0.0):
     """
-    integrate (x**degree / (x-a) ** alpha / (b-x) ** beta) from a to b
+    compute 0..max_s moments of the weight p(x) = 1 / (x-a)^alpha / (b-x)^beta over [xl, xr]
     """
-    assert alpha * beta == 0, \
-        f'at least one of alpha ({alpha}) or beta ({beta}) should be 0'
+    assert alpha * beta == 0, f'alpha ({alpha}) and/or beta ({beta}) must be 0'
+    if alpha != 0.0:
+        assert a is not None, f'"a" not specified while alpha != 0'
+    if beta != 0.0:
+        assert b is not None, f'"b" not specified while beta != 0'
 
-    if alpha == 0 and beta != 0:
-        raise NotImplementedError
+    if alpha == 0 and beta == 0:
+        return [(xr ** s - xl ** s) / s for s in range(1, max_s + 2)]
 
-    if alpha != 0 and beta == 0:
-        raise NotImplementedError
-
-    k = degree + 1
-    return b ** k / k - a ** k / k
+    raise NotImplementedError
 
 
 def runge(s0, s1, m, L):
@@ -33,8 +32,7 @@ def aitken(s0, s1, s2, L):
     s0, s1, s2: consecutive composite quads
     return: accuracy degree estimation
     """
-    m = - np.log(np.abs((s2 - s1) / (s1 - s0))) / np.log(L)
-    return m
+    raise NotImplementedError
 
 
 def quad(func, x0, x1, xs, **kwargs):
@@ -42,18 +40,9 @@ def quad(func, x0, x1, xs, **kwargs):
     func: function to integrate
     x0, x1: interval to integrate on
     xs: nodes
+    **kwargs passed to moments()
     """
-    n = len(xs)
-    moments = []
-    for i in range(n):
-        moments.append(weight(i, x0, x1))
-    nodes = []
-    for i in range(n):
-        for v in xs:
-            nodes.append(v**i)
-    w = np.reshape(np.array(nodes), (n, n))
-    a = np.linalg.solve(w, moments)
-    return sum(a * np.array([func(x) for x in xs]))
+    raise NotImplementedError
 
 
 def quad_gauss(func, x0, x1, n, **kwargs):
@@ -62,7 +51,7 @@ def quad_gauss(func, x0, x1, n, **kwargs):
     x0, x1: interval to integrate on
     n: number of nodes
     """
-    pass
+    raise NotImplementedError
 
 
 def composite_quad(func, x0, x1, n_intervals, n_nodes, **kwargs):
