@@ -10,4 +10,9 @@ def call_counter(func):
 
 
 def get_log_error(x, y, axis=1):
-    return -np.log10(np.linalg.norm(np.array(x) - np.array(y), axis=axis))
+    x = np.array(x)
+    y = np.array(y)
+    if len(x.shape) == 1:
+        return -np.log10(np.abs(x - y))
+    else:
+        return -np.log10(np.linalg.norm(x - y, axis=axis))

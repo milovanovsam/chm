@@ -23,9 +23,9 @@ def test_quad_degree():
         p = Monome(deg)
         y0 = p[x0, x1]
 
-        max_node_count = range(1, max_degree+1)
+        max_node_count = range(1, max_degree + 1)
 
-        Y = [quad(p, x0, x1, np.linspace(x0, x1, node_count)) for node_count in max_node_count]
+        Y = [[quad(p, x0, x1, np.linspace(x0, x1, node_count)) for node_count in max_node_count]]
         # Y = [quad(p, x0, x1, x0 + (x1-x0) * np.random.random(node_count)) for node_count in max_node_count]
         accuracy = get_log_error(Y, y0 * np.ones_like(Y))
         accuracy[np.isinf(accuracy)] = 17
@@ -34,7 +34,7 @@ def test_quad_degree():
         for node_count, acc in zip(max_node_count, accuracy):
             if node_count >= deg + 1:
                 assert acc > 6
-
+        print(accuracy)
         plt.plot(max_node_count, accuracy, '.:', label=f'x^{deg}')
 
     plt.legend()
@@ -94,9 +94,9 @@ def test_composite_quad():
         k, b = np.polyfit(x[ind], accuracy[ind], 1)
         aitken_degree = aitken(*Y[0:6:2], L ** 2)
 
-        plt.subplot(1, 2, i+1)
-        plt.plot(x, k*x+b, 'b:', label=f'{k:.2f}*x+{b:.2f}')
-        plt.plot(x, aitken_degree*x+b, 'm:', label=f'aitken estimation')
+        plt.subplot(1, 2, i + 1)
+        plt.plot(x, k * x + b, 'b:', label=f'{k:.2f}*x+{b:.2f}')
+        plt.plot(x, aitken_degree * x + b, 'm:', label=f'aitken estimation')
         plt.plot(x, accuracy, 'kh', label=f'accuracy for x^{degree}')
         plt.legend()
 
@@ -113,7 +113,7 @@ def test_integrate():
     for tol in 10. ** np.arange(-9, -2):
         s, err = integrate(p, x0, x1, tol=tol)
 
-        print(f'Check for tol {tol:.2e}: res = {s-err:.6f} .. {s:.6f} .. {s+err:.6f}')
+        print(f'Check for tol {tol:.2e}: res = {s - err:.6f} .. {s:.6f} .. {s + err:.6f}')
 
         assert err >= 0, 'estimated error should be >= 0'
         assert np.abs(p[x0, x1] - s) <= err, 'actual error should be <= estimated error'

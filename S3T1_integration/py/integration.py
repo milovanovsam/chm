@@ -5,7 +5,7 @@ def weight(degree, a, b, alpha=0, beta=0):
     """
     integrate (x**degree / (x-a) ** alpha / (b-x) ** beta) from a to b
     """
-    assert alpha * beta == 0,\
+    assert alpha * beta == 0, \
         f'at least one of alpha ({alpha}) or beta ({beta}) should be 0'
 
     if alpha == 0 and beta != 0:
@@ -33,7 +33,8 @@ def aitken(s0, s1, s2, L):
     s0, s1, s2: consecutive composite quads
     return: accuracy degree estimation
     """
-    raise NotImplementedError
+    m = - np.log(np.abs((s2 - s1) / (s1 - s0))) / np.log(L)
+    return m
 
 
 def quad(func, x0, x1, xs, **kwargs):
@@ -42,7 +43,17 @@ def quad(func, x0, x1, xs, **kwargs):
     x0, x1: interval to integrate on
     xs: nodes
     """
-    raise NotImplementedError
+    n = len(xs)
+    moments = []
+    for i in range(n):
+        moments.append(weight(i, x0, x1))
+    nodes = []
+    for i in range(n):
+        for v in xs:
+            nodes.append(v**i)
+    w = np.reshape(np.array(nodes), (n, n))
+    a = np.linalg.solve(w, moments)
+    return sum(a * np.array([func(x) for x in xs]))
 
 
 def quad_gauss(func, x0, x1, n, **kwargs):
@@ -51,7 +62,7 @@ def quad_gauss(func, x0, x1, n, **kwargs):
     x0, x1: interval to integrate on
     n: number of nodes
     """
-    raise NotImplementedError
+    pass
 
 
 def composite_quad(func, x0, x1, n_intervals, n_nodes, **kwargs):
