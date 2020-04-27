@@ -16,11 +16,12 @@ def moments(max_s, xl, xr, a=None, b=None, alpha=0.0, beta=0.0):
         return m
     if beta != 0.0:
         assert b is not None, f'"b" not specified while beta != 0'
-        m = [((b - xr) ** (1 - beta) - (b - xl) ** (1 - beta)) / (1 - beta)]
+        m = [((b - xl) ** (1 - beta) - (b - xr) ** (1 - beta)) / (1 - beta)]
         for i in range(1, max_s + 1):
-            coef = np.poly([b]*i)[::-1]
-            m.append(sum([coef[j] / (j + 1 - beta) * ((b - xr) ** (j + 1 - beta) - (b - xl) ** (j + 1 - beta))
-                          for j in range(0, i + 1)]))
+            coef = (-1)**i * np.poly([b]*i)[::-1]
+            m.append(- sum(
+                [coef[j] / (j + 1 - beta) * ((b - xr) ** (j + 1 - beta) - (b - xl) ** (j + 1 - beta))
+                 for j in range(0, i + 1)]))
         return m
     if alpha == 0 and beta == 0:
         return [(xr ** s - xl ** s) / s for s in range(1, max_s + 2)]
@@ -43,7 +44,6 @@ def aitken(s0, s1, s2, L):
     s0, s1, s2: consecutive composite quads
     return: accuracy degree estimation
     """
-    print(s0, s1, s2)
     m = - np.log(np.abs((s2 - s1) / (s1 - s0))) / np.log(L)
     return m
 
@@ -59,6 +59,7 @@ def quad(func, x0, x1, xs, **kwargs):
     nodes = [[(v ** i) for v in xs] for i in range(n)]
     w = np.reshape(np.array(nodes), (n, n))
     a = np.linalg.solve(w, moments(n - 1, x0, x1, **kwargs))
+    print(a)
     return sum(a * np.array([func(x) for x in xs]))
 
 
@@ -101,10 +102,10 @@ def integrate(func, x0, x1, tol):
     h_opt = x1 - x0
     error = tol + 1
     while error >= tol:
-        h = [h_opt / L**i for i in range(3)]
+        h = [h_opt / L ** i for i in range(3)]
         n_intervals = [int((x1 - x0) / step) + 1 for step in h]
         s_h = [composite_quad(func, x0, x1, interval, n_nodes) for interval in n_intervals]
         m = aitken(*s_h, L)
         error = runge(*s_h[1:], m, L)[0]
-        h_opt = s_h[2] * (tol / error) ** (1/m)
+        h_opt = s_h[2] * (tol / error) ** (1 / m)
     return s_h[2], error

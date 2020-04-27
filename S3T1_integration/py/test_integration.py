@@ -18,6 +18,8 @@ def test_quad_degree():
     """
     check quadrature degree
     Q: why in some cases x^n integrated perfectly with only n nodes?
+    A: because we use equally spaced nodes and also when n is odd, some coef of quad are the same, then degree = n
+     (min accuracy_degree = n-1, but right way to choose nodes can help to increase degree)
     """
     x0, x1 = 0, 1
 
@@ -30,6 +32,7 @@ def test_quad_degree():
         max_node_count = range(1, max_degree+1)
 
         Y = [quad(p, x0, x1, np.linspace(x0, x1, node_count)) for node_count in max_node_count]
+        # Y = [quad(p, x0, x1, np.linspace(x0, x1, node_count) if node_count > 1 else [(x0+x1)/2]) for node_count in max_node_count]
         # Y = [quad(p, x0, x1, x0 + (x1-x0) * np.random.random(node_count)) for node_count in max_node_count]
         accuracy = get_log_error(Y, y0 * np.ones_like(Y))
         accuracy[np.isinf(accuracy)] = 17
@@ -115,6 +118,7 @@ def test_composite_quad(n_nodes):
     """
     test composite 2-, 3-, 5-node quads
     Q: explain converge speed for each case
+    A: converge of 5-node for x^5 has good accuracy initially, but in other cases converge = node + 1
     """
     plt.figure()
 
@@ -153,6 +157,7 @@ def test_composite_quad(n_nodes):
 def test_composite_quad_degree(v):
     """
     Q: convergence maybe somewhat between 3 and 4, why?
+    A: yes and depend of p(x), which tends in the limit 1 as x -> +-inf
     """
     from .variants import params
 
