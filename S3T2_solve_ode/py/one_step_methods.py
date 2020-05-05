@@ -45,7 +45,7 @@ class ImplicitEulerMethod(OneStepMethod):
 
     def step(self, func: ODE, t, y, dt):
         f = lambda y_new: y + dt * func(t + dt, y_new) - y_new
-        return y + dt * func(t + dt, fsolve(f, y))
+        return fsolve(f, y)
 
 
 class RungeKuttaMethod(OneStepMethod):
