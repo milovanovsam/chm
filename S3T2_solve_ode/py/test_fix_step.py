@@ -38,6 +38,7 @@ def test_one_step():
                 RungeKuttaMethod(collection.dopri_coeffs),
             ]
     ):
+        f.clear_call_counter()
         _, y = fix_step_integration(method, f, y0, ts)
         print(f'len(Y): {len(y)}')
         print(f'Function calls: {f.get_call_counter()}')
@@ -55,6 +56,7 @@ def test_multi_step():
     """
     test Adams method
     Q: compare the right plot for both cases and explain the difference
+    A: Euler has p = 2, Rk4 has order = 5 (the best), because adams on interval gives acc = k+1, on step = k + 2
     """
     y0 = np.array([0., 1.])
     t0 = 0
@@ -72,6 +74,7 @@ def test_multi_step():
         plt.figure()
         plt.subplot(1, 2, 1), plt.plot(ts, [e[0] for e in exact], 'k', label='Exact')
         for p, c in adams_coeffs.items():
+            f.clear_call_counter()
             t_adams, y_adams = adams(f, y0, ts, c,
                                      one_step_method=one_step_method)
             print(f'Function calls: {f.get_call_counter()}')
